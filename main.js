@@ -75,12 +75,22 @@ function init() {
 
 GM = {
     lvls: [],
+    lvl: 0,
     addLevel(func) {
         if(typeof func === 'function') {
-            this.lvls.push(func(canvas.width, canvas.height));
+
+            var data = func(canvas.width, canvas.height);
+
+            this.lvls.push(new Level(data));
+
             return;
         }
         console.error('can`t add lvl');
+    },
+    drawCurrentLevel(){
+        if(this.lvls.length > this.lvl) {
+            this.lvls[this.lvl].draw();
+        }
     }
 };
 
@@ -157,6 +167,8 @@ function drawScene() {
     mouse.draw();
     snake.draw();
 
+    GM.drawCurrentLevel();
+
     requestAnimationFrame(drawScene);
 }
 
@@ -184,16 +196,11 @@ function Level (data) {
         }
     };
 
-    (function(){
+    // (function(){
         for(var i in data){
             this.walls.push(new Wall(data[i][0], data[i][1], data[i][2], data[i][3]))
         }
-    })()
+    // })();
 }
-
-new Level([
-    [0, 40, 30, 30],
-    [20, 30, 10, 30]
-])
 
 init();
