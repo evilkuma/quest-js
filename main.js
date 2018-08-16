@@ -16,7 +16,7 @@
  *      метод draw - отрисовывать квадрат на канвасе
  * 
  *      Параметры хранить в соответствующих атрибутах класса.
- * 2) Для класса Wall создать метод crossRect:
+ * 2) Для класса Wall создать метод cross:
  *      @param x - позиция по оси X
  *      @param y - позиция по оси Y
  *      @param w - ширна
@@ -59,8 +59,10 @@ Math.rand = function(min, max) {
     return rand;
 }
 
+// Глобальные переменные.
 var canvas, ctx, mouse, snake, GM;
 
+// Инициализация Canvas
 function init() {
     canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
@@ -68,7 +70,6 @@ function init() {
     canvas.width = 1300;
     canvas.height = 800;
     ctx = canvas.getContext('2d');
-
     startGame();
 }
 
@@ -143,7 +144,7 @@ function Snake(x, y) {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.w, this.h);
         ctx.fill();
-    }
+    };
 }
 
 function Body(x, y) {
@@ -158,5 +159,41 @@ function drawScene() {
 
     requestAnimationFrame(drawScene);
 }
+
+// Стена
+function Wall(x, y, w, h){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.draw = function () {
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.w, this.h);
+        ctx.fill();
+    };
+
+    this.cross = function (x, y, w, h) {
+        // TODO: is intersects 2 2d boundingboxes
+    };
+}
+function Level (data) {
+    this.walls = [];
+    this.draw = function () {
+        for(var i in this.walls) {
+            this.walls[i].draw();
+        }
+    };
+
+    (function(){
+        for(var i in data){
+            this.walls.push(new Wall(data[i][0], data[i][1], data[i][2], data[i][3]))
+        }
+    })()
+}
+
+new Level([
+    [0, 40, 30, 30],
+    [20, 30, 10, 30]
+])
 
 init();
